@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>คลังข้อสอบ Manso</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-hover: #334155;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --primary: #38bdf8;
+      --border: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      padding: 24px 16px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+    }
+
+    header {
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+
+    header p {
+      color: var(--text-sub);
+      font-size: 0.95rem;
+    }
+
+    .search-box {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+    }
+
+    .exam-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .exam-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card-bg);
+      padding: 16px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      transition: all 0.2s ease;
+    }
+
+    .exam-card:hover, .exam-card:active {
+      background: var(--card-hover);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .exam-info h2 {
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+    }
+
+    .exam-info p {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+    }
+
+    .arrow {
+      font-size: 1.2rem;
+      color: var(--primary);
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>📚 คลังข้อสอบ</h1>
+      <p>เลือกชุดข้อสอบที่ต้องการฝึกทำด้านล่าง</p>
+    </header>
+
+    <!-- ช่องค้นหาข้อสอบแบบเร็ว -->
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="🔍 ค้นหาชุดข้อสอบ..." onkeyup="filterExams()">
+    </div>
+
+    <div class="exam-grid" id="examList">
+      
+      <!-- ชุดที่ 1: Holistic200 -->
+      <a href="Holistic200.html" class="exam-card">
+        <div class="exam-info">
+          <h2>📝 ข้อสอบ Holistic 200 ข้อ</h2>
+          <p>แบบทดสอบสุขภาพองค์รวม 200 ข้อ (Auto-Save & Resume)</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+
+      <!-- วิธีเพิ่มชุดใหม่: เพียงคัดลอกบล็อก <a> ด้านล่างนี้ แล้วเปลี่ยนชื่อไฟล์ href กับชื่อหัวข้อ -->
+      <!--
+      <a href="ชื่อไฟล์ข้อสอบถัดไป.html" class="exam-card">
+        <div class="exam-info">
+          <h2>📝 ข้อสอบชุดที่ 2</h2>
+          <p>คำอธิบายสั้นๆ ของชุดข้อสอบ</p>
+        </div>
+        <span class="arrow">→</span>
+      </a>
+      -->
+
+    </div>
+  </div>
+
+  <script>
+    // ฟังก์ชันกรองค้นหาชุดข้อสอบ
+    function filterExams() {
+      const input = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.exam-card');
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        card.style.display = text.includes(input) ? 'flex' : 'none';
+      });
+    }
+  </script>
+
+</body>
+</html>
