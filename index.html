@@ -113,6 +113,12 @@
       color: var(--primary);
       font-weight: bold;
     }
+
+    .loading {
+      text-align: center;
+      color: var(--text-sub);
+      padding: 20px;
+    }
   </style>
 </head>
 <body>
@@ -123,38 +129,66 @@
       <p>เลือกชุดข้อสอบที่ต้องการฝึกทำด้านล่าง</p>
     </header>
 
-    <!-- ช่องค้นหาข้อสอบแบบเร็ว -->
     <div class="search-box">
       <input type="text" id="searchInput" placeholder="🔍 ค้นหาชุดข้อสอบ..." onkeyup="filterExams()">
     </div>
 
     <div class="exam-grid" id="examList">
-      
-      <!-- ชุดที่ 1: Holistic200 -->
-      <a href="Holistic200.html" class="exam-card">
-        <div class="exam-info">
-          <h2>📝 ข้อสอบ Holistic 200 ข้อ</h2>
-          <p>แบบทดสอบสุขภาพองค์รวม 200 ข้อ (Auto-Save & Resume)</p>
-        </div>
-        <span class="arrow">→</span>
-      </a>
-
-      <!-- วิธีเพิ่มชุดใหม่: เพียงคัดลอกบล็อก <a> ด้านล่างนี้ แล้วเปลี่ยนชื่อไฟล์ href กับชื่อหัวข้อ -->
-      <!--
-      <a href="ชื่อไฟล์ข้อสอบถัดไป.html" class="exam-card">
-        <div class="exam-info">
-          <h2>📝 ข้อสอบชุดที่ 2</h2>
-          <p>คำอธิบายสั้นๆ ของชุดข้อสอบ</p>
-        </div>
-        <span class="arrow">→</span>
-      </a>
-      -->
-
+      <div class="loading" id="loadingText">กำลังโหลดรายการข้อสอบ...</div>
     </div>
   </div>
 
   <script>
-    // ฟังก์ชันกรองค้นหาชุดข้อสอบ
+    // ตั้งค่าข้อมูลโปรเจกต์ของคุณ
+    const USERNAME = 'warinpog-glitch';
+    const REPO = 'Manso';
+
+    async function loadExams() {
+      const container = document.getElementById('examList');
+      const loading = document.getElementById('loadingText');
+
+      try {
+        // ดึงรายการไฟล์ใน Repository ผ่าน GitHub API
+        const res = await fetch(`https://api.github.com/repos/${USERNAME}/${REPO}/contents/?t=${new Date().getTime()}`);
+
+        const files = await res.json();
+
+        // กรองเฉพาะไฟล์ .html และยกเว้น index.html
+        const examFiles = files.filter(file => 
+          file.name.endsWith('.html') && file.name.toLowerCase() !== 'index.html'
+        );
+
+        loading.remove();
+
+        if (examFiles.length === 0) {
+          container.innerHTML = '<div class="loading">ยังไม่พบไฟล์ข้อสอบ (.html)</div>';
+          return;
+        }
+
+        // นำไฟล์ที่เจอมาสร้างเป็นปุ่มข้อสอบ
+        examFiles.forEach(file => {
+          // ตัดนามสกุล .html ออกเพื่อนำมาแสดงเป็นชื่อหัวข้อ
+          const title = file.name.replace(/\.html$/i, '');
+          
+          const card = document.createElement('a');
+          card.href = file.name;
+          card.className = 'exam-card';
+          card.innerHTML = `
+            <div class="exam-info">
+              <h2>📝 ${title}</h2>
+              <p>ไฟล์: ${file.name}</p>
+            </div>
+            <span class="arrow">→</span>
+          `;
+          container.appendChild(card);
+        });
+
+      } catch (err) {
+        loading.innerText = 'เกิดข้อผิดพลาดในการโหลดรายการข้อสอบ';
+        console.error(err);
+      }
+    }
+
     function filterExams() {
       const input = document.getElementById('searchInput').value.toLowerCase();
       const cards = document.querySelectorAll('.exam-card');
@@ -163,6 +197,8 @@
         card.style.display = text.includes(input) ? 'flex' : 'none';
       });
     }
+
+    loadExams();
   </script>
 
 </body>
