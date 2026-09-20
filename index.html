@@ -113,12 +113,6 @@
       color: var(--primary);
       font-weight: bold;
     }
-
-    .loading {
-      text-align: center;
-      color: var(--text-sub);
-      padding: 20px;
-    }
   </style>
 </head>
 <body>
@@ -134,59 +128,44 @@
     </div>
 
     <div class="exam-grid" id="examList">
-      <div class="loading" id="loadingText">กำลังโหลดรายการข้อสอบ...</div>
+      <!-- รายการข้อสอบจะถูกสร้างขึ้นตรงนี้ -->
     </div>
   </div>
 
   <script>
-    // ตั้งค่าข้อมูลโปรเจกต์ของคุณ
-    const USERNAME = 'warinpog-glitch';
-    const REPO = 'Manso';
-
-    async function loadExams() {
-      const container = document.getElementById('examList');
-      const loading = document.getElementById('loadingText');
-
-      try {
-        // ดึงรายการไฟล์ใน Repository ผ่าน GitHub API
-        const res = await fetch(`https://api.github.com/repos/${USERNAME}/${REPO}/contents/?t=${new Date().getTime()}`);
-
-        const files = await res.json();
-
-        // กรองเฉพาะไฟล์ .html และยกเว้น index.html
-        const examFiles = files.filter(file => 
-          file.name.endsWith('.html') && file.name.toLowerCase() !== 'index.html'
-        );
-
-        loading.remove();
-
-        if (examFiles.length === 0) {
-          container.innerHTML = '<div class="loading">ยังไม่พบไฟล์ข้อสอบ (.html)</div>';
-          return;
-        }
-
-        // นำไฟล์ที่เจอมาสร้างเป็นปุ่มข้อสอบ
-        examFiles.forEach(file => {
-          // ตัดนามสกุล .html ออกเพื่อนำมาแสดงเป็นชื่อหัวข้อ
-          const title = file.name.replace(/\.html$/i, '');
-          
-          const card = document.createElement('a');
-          card.href = file.name;
-          card.className = 'exam-card';
-          card.innerHTML = `
-            <div class="exam-info">
-              <h2>📝 ${title}</h2>
-              <p>ไฟล์: ${file.name}</p>
-            </div>
-            <span class="arrow">→</span>
-          `;
-          container.appendChild(card);
-        });
-
-      } catch (err) {
-        loading.innerText = 'เกิดข้อผิดพลาดในการโหลดรายการข้อสอบ';
-        console.error(err);
+    // รายชื่อชุดข้อสอบทั้งหมด (เพิ่ม-ลดตรงนี้ได้ง่ายๆ)
+    const exams = [
+      {
+        title: "ข้อสอบ Holistic 200 ข้อ",
+        desc: "แบบทดสอบสุขภาพองค์รวม 200 ข้อ",
+        file: "Holistic_200.html"
+      },
+      {
+        title: "ข้อสอบ Manso 200 ข้อ",
+        desc: "แบบทดสอบ Manso 200 ข้อ",
+        file: "Manso_200.html"
       }
+      // เวลาเพิ่มชุดใหม่ ให้ใส่ลูกน้ำคั่น แล้วเพิ่มบรรทัดแบบนี้:
+      // , { title: "ข้อสอบชุดที่ 3", desc: "คำอธิบาย", file: "Exam3.html" }
+    ];
+
+    function renderExams() {
+      const container = document.getElementById('examList');
+      container.innerHTML = '';
+
+      exams.forEach(exam => {
+        const card = document.createElement('a');
+        card.href = exam.file;
+        card.className = 'exam-card';
+        card.innerHTML = `
+          <div class="exam-info">
+            <h2>📝 ${exam.title}</h2>
+            <p>${exam.desc}</p>
+          </div>
+          <span class="arrow">→</span>
+        `;
+        container.appendChild(card);
+      });
     }
 
     function filterExams() {
@@ -198,7 +177,7 @@
       });
     }
 
-    loadExams();
+    renderExams();
   </script>
 
 </body>
